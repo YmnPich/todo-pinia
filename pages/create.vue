@@ -72,7 +72,8 @@
 </template>
 
 <script>
-import { useTaskStore } from '@/stores/taskStore';
+import { useTaskStore } from '@/stores/TaskStore';
+import { v4 as uuidv4 } from 'uuid';  // Importing UUID v4 generator
 
 export default {
   data() {
@@ -94,15 +95,17 @@ export default {
   },
   methods: {
     handleSubmit() {
+      // Create a new task with a unique id
       const newTask = {
+        id: uuidv4(),  // Assign a unique id to the new task
         ...this.form,
         isCompleted: false,
       };
-      
-      const taskStore = useTaskStore();  
-      taskStore.addTask(newTask);  
 
-      this.$router.push('/'); 
+      const taskStore = useTaskStore();
+      taskStore.addTask(newTask);
+
+      this.$router.push('/'); // Redirect to the homepage or task list after adding the task
     },
     saveDeadline() {
       this.datePickerDialog = false;

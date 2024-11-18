@@ -31,7 +31,13 @@
               required
             ></v-text-field>
   
-            <v-btn color="primary" type="submit" block large class="mt-5 font-weight-bold">
+            <v-btn
+              color="primary"
+              type="submit"
+              block
+              large
+              class="mt-5 font-weight-bold"
+            >
               Update Task
             </v-btn>
           </v-form>
@@ -41,41 +47,42 @@
   </template>
   
   <script>
-  import { useTaskStore } from '@/stores/taskStore';
-  import { useRoute, useRouter } from 'vue-router';
+  import { useTaskStore } from "@/stores/TaskStore";
+  import { useRoute, useRouter } from "vue-router";
   
   export default {
     data() {
       return {
         form: {
-          title: '',
-          description: '',
-          deadline: '',
+          title: "",
+          description: "",
+          deadline: "",
         },
       };
     },
-    setup() {
-      const taskStore = useTaskStore();
+    setup() {},
+    created() {
       const route = useRoute();
-      const router = useRouter();
-  
-      // Load the task details to prefill the form
-      const taskId = parseInt(route.params.id);
-      const task = taskStore.tasks.find((task) => task.id === taskId);
-  
-      if (task) {
-        return {
-          form: { ...task },
-        };
-      }
-  
-      return {};
+      useTaskStore().fetchTaskById(route.params.id);
+    },
+    watch: {
+      task: {
+        handler() {
+          this.form = this.task;
+        },
+        deep: true,
+      },
+    },
+    computed: {
+      task() {
+        return useTaskStore().getCurrentTask;
+      },
     },
     methods: {
       handleUpdate() {
         const taskStore = useTaskStore();
-        taskStore.updateTask(this.form); // Pass the updated form data to updateTask
-        this.$router.push('/'); // Navigate back to the task list
+        taskStore.updateTask(this.form);
+        this.$router.push("/");
       },
     },
   };
